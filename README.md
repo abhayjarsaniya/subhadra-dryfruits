@@ -1,12 +1,12 @@
-# Raj Dryfruits & Mukhwas (Ahmedabad)
+# Subhadra Dryfruits (Ahmedabad)
 
-Premium digital storefront and WhatsApp inquiry platform for **Raj Dryfruits & Mukhwas**, Ahmedabad.
+Premium digital storefront and WhatsApp inquiry platform for **Subhadra Dryfruits**, Ahmedabad.
 
 ## Store Information
-- **Brand**: Raj Dryfruits & Mukhwas
-- **Store Location**: Radha Apartments, Shop No. 4, 100 Feet Anand Nagar Road, Beside Natraj Medical, Jodhpur Village, Ahmedabad, Gujarat 380015
-- **Phone / WhatsApp**: +91 9712698899
-- **Google Rating**: 4.6 ★
+- **Brand**: Subhadra Dryfruits
+- **Store Location**: Shop No. U/4, Balaji Complex, Opp. Gokul Hospital, Beside Falguni Gruh Udyog, Nehru Park, Sardar Chowk, Vastrapur, Ahmedabad, Gujarat 380015
+- **Phone / WhatsApp**: +91 7874306085
+- **Google Rating**: 4.8 ★
 
 ---
 
@@ -60,4 +60,4 @@ npm run start
 ---
 
 ## License
-Private property of Raj Dryfruits & Mukhwas, Ahmedabad. All rights reserved.
+Private property of Subhadra Dryfruits, Ahmedabad. All rights reserved.

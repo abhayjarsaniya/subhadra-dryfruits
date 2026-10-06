@@ -1,5 +1,5 @@
 /**
- * Editable catalog for Raj Dry Fruits.
+ * Editable catalog for Subhadra Dryfruits.
  * Update names, copy, weights, and indicative INR prices here.
  * Prices are confirmed with the customer on WhatsApp — this site does not take payment.
  */
@@ -603,7 +603,7 @@ export const products: Product[] = [
     name: "Celebration Dry Fruit Box",
     category: "gifts",
     group: "Hampers",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Almonds, cashews, pistachios and dates in a cream box.",
     description:
       "A ready hamper of the nuts and dates people actually finish. Tell us the occasion on WhatsApp and we will help you choose the size.",
@@ -619,7 +619,7 @@ export const products: Product[] = [
     name: "Chocolate & Nut Hamper",
     category: "gifts",
     group: "Hampers",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Dark chocolate with cashews and almonds, packed to share.",
     description:
       "For the person who wants both the nut bowl and something sweeter. A balanced hamper that feels generous without being fussy.",
@@ -634,7 +634,7 @@ export const products: Product[] = [
     name: "Morning Ritual Box",
     category: "gifts",
     group: "Hampers",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Coffee, tea and a few fine nuts for unhurried mornings.",
     description:
       "A small ritual in a box: beans or a favourite tea, plus almonds and pistachios. Ask us to swap the brew if you know their cup.",
@@ -649,7 +649,7 @@ export const products: Product[] = [
     name: "Diwali Celebration Box",
     category: "bundles",
     group: "Diwali",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Dry fruits, chocolates, tea and a surprise gift for the festival of lights.",
     description:
       "A celebration box arranged for Diwali visits and family tables. The mix is generous, giftable, and easy to send as one inquiry.",
@@ -668,7 +668,7 @@ export const products: Product[] = [
     name: "Raksha Bandhan Box",
     category: "bundles",
     group: "Raksha Bandhan",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Premium dry fruits, chocolates and a special surprise for the sibling you mean it for.",
     description:
       "A warm box for Raksha Bandhan. Nuts and chocolate do the talking, and a small surprise finishes the gesture.",
@@ -686,7 +686,7 @@ export const products: Product[] = [
     name: "Wedding Celebration Box",
     category: "bundles",
     group: "Wedding",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Premium dry fruits, chocolates and coffee or tea for a wedding celebration.",
     description:
       "A polished box for weddings and the dinners around them. Ask us in the note if you need several boxes in the same style.",
@@ -704,7 +704,7 @@ export const products: Product[] = [
     name: "Corporate Gift Box",
     category: "bundles",
     group: "Corporate Gifting",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Premium dry fruits, chocolates, coffee and an elegant presentation.",
     description:
       "A restrained corporate hamper that still feels generous. Share the quantity you need and we will confirm packing on WhatsApp.",
@@ -722,7 +722,7 @@ export const products: Product[] = [
     name: "Festive Family Box",
     category: "bundles",
     group: "Festive",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Mixed dry fruits, chocolates, tea and a surprise gift for the whole table.",
     description:
       "A family-sized festive box when the occasion is happy but not tied to one festival. Useful all year, especially when guests are expected.",
@@ -740,7 +740,7 @@ export const products: Product[] = [
     name: "Premium Celebration Box",
     category: "bundles",
     group: "Festive",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Luxury dry fruits, chocolates, coffee, tea and a surprise gift.",
     description:
       "The fullest box in the house. Dry fruits, chocolate and both a coffee and a tea, finished with a surprise for the person who notices details.",
@@ -757,7 +757,7 @@ export const products: Product[] = [
     name: "Birthday Celebration Box",
     category: "bundles",
     group: "Birthday",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Dry fruits, chocolates and a small surprise for a birthday worth marking.",
     description:
       "A birthday box that feels considered rather than loud. Add a note with their name and we will keep the packing personal.",
@@ -775,7 +775,7 @@ export const products: Product[] = [
     name: "Anniversary Celebration Box",
     category: "bundles",
     group: "Anniversary",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Handcrafted dry fruits, artisanal chocolates, and an aromatic tea blend for milestone moments.",
     description:
       "Curated to honour cherished milestones and golden anniversaries. Combines rich California almonds, creamy cashews, luxury pralines and aromatic Darjeeling tea in a signature festive box.",
@@ -793,7 +793,7 @@ export const products: Product[] = [
     name: "Custom Celebration Box",
     category: "bundles",
     group: "Custom Gift Boxes",
-    origin: "Raj selection",
+    origin: "Subhadra selection",
     short: "Your bespoke choice of dry fruits, chocolates, coffees and teas tailored for your occasion.",
     description:
       "Tell us your theme, guest count, and favourite flavours. We thoughtfully assemble your bespoke box with customised assortments, ribbon presentation and personalized greeting cards.",

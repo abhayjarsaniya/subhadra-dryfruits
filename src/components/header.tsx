@@ -41,7 +41,7 @@ export function Header() {
     <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 backdrop-blur-md">
       {/* 3-Part Header Layout: Logo (Left) | Navigation (Center) | Actions (Right) */}
       <div className="shell relative flex h-16 items-center justify-between">
-        {/* LEFT: Raj Dryfruits Logo + Name */}
+        {/* LEFT: Subhadra Dryfruits Logo + Name */}
         <div className="flex shrink-0 items-center">
           <BrandMark />
         </div>

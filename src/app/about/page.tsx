@@ -14,7 +14,7 @@ import { InquiryLink } from "@/components/inquiry-link";
 export const metadata: Metadata = {
   title: "About Us",
   description:
-    "Raj Dryfruits & Mukhwas is a premium dry fruits, chocolates and celebration boxes store located on Anand Nagar Road, Ahmedabad.",
+    "Subhadra Dryfruits is a premium dry fruits, nuts, chocolates and celebration boxes store located in Vastrapur, Ahmedabad.",
 };
 
 export default function AboutPage() {
@@ -24,7 +24,7 @@ export default function AboutPage() {
         {/* LEFT: Content & Store Details */}
         <article className="flex flex-col">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E2635]">
-            About Raj Dryfruits &amp; Mukhwas
+            About Subhadra Dryfruits
           </p>
           <h1 className="mt-2.5 font-serif text-3xl font-medium leading-[1.1] text-ink sm:mt-3 sm:text-5xl lg:text-6xl">
             Selected Slowly. Inquired Simply.
@@ -81,13 +81,13 @@ export default function AboutPage() {
           </div>
         </article>
 
-        {/* RIGHT: Premium Raj Dryfruits Showcase Image */}
+        {/* RIGHT: Premium Subhadra Dryfruits Showcase Image */}
         <div className="mt-4 lg:mt-0 lg:sticky lg:top-24">
           <div className="overflow-hidden rounded-[24px] border border-[#e6e2dc] bg-[#fbf9f6] p-3 shadow-md sm:rounded-[28px] sm:p-4">
             <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[18px] bg-white sm:rounded-[20px] lg:aspect-[5/4]">
               <Image
                 src="/images/hero-composition.jpg"
-                alt="Premium assortment of dry fruits, almonds, cashews, pistachios, dates and walnuts from Raj Dryfruits Ahmedabad"
+                alt="Premium assortment of dry fruits, almonds, cashews, pistachios, dates and walnuts from Subhadra Dryfruits Ahmedabad"
                 fill
                 priority
                 className="object-contain p-3 transition-transform duration-500 hover:scale-[1.02]"
@@ -96,10 +96,10 @@ export default function AboutPage() {
             </div>
             <div className="mt-3.5 px-2 pb-1 text-center">
               <p className="font-serif text-base font-semibold text-ink sm:text-lg">
-                Raj Dryfruits &amp; Mukhwas
+                Subhadra Dryfruits
               </p>
               <p className="mt-0.5 text-xs text-stone-500">
-                100 Feet Anand Nagar Road · Jodhpur Village, Ahmedabad
+                Balaji Complex · Vastrapur, Ahmedabad
               </p>
             </div>
           </div>

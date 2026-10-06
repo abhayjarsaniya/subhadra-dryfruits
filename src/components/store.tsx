@@ -21,7 +21,7 @@ import {
 } from "@/lib/cart-rules";
 import type { InquiryLine } from "@/lib/whatsapp";
 
-const STORAGE_KEY = "raj-inquiry-cart-v2";
+const STORAGE_KEY = "subhadra-inquiry-cart-v1";
 
 export type Notice = { id: number; message: string; tone: "ok" | "limit" } | null;
 
@@ -56,7 +56,7 @@ const StoreContext = createContext<StoreValue | null>(null);
 function readStored(): CartLine[] {
   if (typeof window === "undefined") return [];
   try {
-    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("raj-inquiry-cart");
+    const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem("subhadra-inquiry-cart");
     if (!raw) return [];
     const parsed = JSON.parse(raw) as CartLine[];
     if (!Array.isArray(parsed)) return [];

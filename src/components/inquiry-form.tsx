@@ -133,7 +133,7 @@ export function InquiryForm() {
               Let&apos;s get your order details.
             </h2>
             <p className="mt-1.5 text-xs leading-relaxed text-stone-600 sm:text-sm">
-              Just a few details so Raj Dryfruits knows who to prepare the inquiry for.
+              Just a few details so Subhadra Dryfruits knows who to prepare the inquiry for.
             </p>
           </div>
           <button

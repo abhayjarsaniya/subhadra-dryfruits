@@ -3,7 +3,7 @@ import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Shipping Information",
-  description: "How Raj Dry Fruits inquiries, pricing and delivery are confirmed on WhatsApp.",
+  description: "How Subhadra Dryfruits inquiries, pricing and delivery are confirmed on WhatsApp.",
 };
 
 export default function ShippingPage() {

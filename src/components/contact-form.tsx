@@ -8,7 +8,7 @@ export function ContactForm() {
   const [name, setName] = useState("");
   const [note, setNote] = useState("");
 
-  const message = `Hello Raj Dryfruits,
+  const message = `Hello Subhadra Dryfruits,
 
 I would like to inquire about your products.
 
@@ -71,7 +71,7 @@ Thank you.`;
       </button>
 
       <p className="mt-3 text-center text-[11px] text-stone-400">
-        Direct chat with the Raj Dryfruits team. No automated bots.
+        Direct chat with the Subhadra Dryfruits team. No automated bots.
       </p>
     </form>
   );

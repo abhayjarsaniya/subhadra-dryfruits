@@ -13,7 +13,7 @@ import { generalInquiryMessage, whatsappHref } from "@/lib/whatsapp";
 export const metadata: Metadata = {
   title: "Contact & Store Location",
   description:
-    "Visit Raj Dryfruits & Mukhwas at Anand Nagar Road, Ahmedabad or send an inquiry on WhatsApp +91 9712698899.",
+    "Visit Subhadra Dryfruits at Balaji Complex, Vastrapur, Ahmedabad or send an inquiry on WhatsApp +91 7874306085.",
 };
 
 export default function ContactPage() {

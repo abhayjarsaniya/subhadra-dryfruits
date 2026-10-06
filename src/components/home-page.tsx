@@ -67,21 +67,21 @@ export function HomePage() {
             <div className="order-1 flex items-center gap-2">
               <span className="h-px w-6 bg-[#6E2635]" />
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E2635]">
-                RAJ DRYFRUITS &amp; MUKHWAS · AHMEDABAD
+                SUBHADRA DRYFRUITS · AHMEDABAD
               </p>
             </div>
 
             {/* Main Heading */}
             <h1 className="order-2 mt-3.5 font-serif text-[2.15rem] font-medium leading-[1.1] text-ink sm:mt-4 sm:text-6xl lg:text-7xl">
-              Premium Goodness, Chosen for Every Occasion.
+              Finest Dry Fruits, Handcrafted for Every Celebration.
             </h1>
 
             {/* Supporting Text - Short on Mobile, Full on Desktop */}
             <p className="order-3 mt-3 text-sm leading-relaxed text-stone-600 sm:hidden">
-              Premium dry fruits, chocolates, coffee, tea and celebration boxes for every occasion.
+              Hand-picked dry fruits, gourmet chocolates, and celebration gift boxes for your family occasions.
             </p>
             <p className="order-3 mt-5 hidden max-w-lg text-base leading-relaxed text-stone-600 sm:block sm:text-lg">
-              Explore carefully selected dry fruits, chocolates, coffee, tea and celebration boxes from Raj Dryfruits.
+              Explore meticulously sourced dry fruits, roasted nuts, fine chocolates, teas and celebration boxes from Subhadra Dryfruits.
             </p>
 
             {/* Rating Proof — Desktop: Single Row Before CTAs */}
@@ -91,7 +91,7 @@ export function HomePage() {
                 <span>{STORE_RATING} Google Rating</span>
               </div>
               <span className="text-xs text-stone-400">·</span>
-              <span className="text-xs text-stone-500">Jodhpur Village, Anand Nagar Road</span>
+              <span className="text-xs text-stone-500">Balaji Complex, Vastrapur</span>
             </div>
 
             {/* CTAs */}
@@ -119,7 +119,7 @@ export function HomePage() {
                 <span className="whitespace-nowrap">{STORE_RATING} · Customer Favourite (Google Rating)</span>
               </div>
               <p className="text-xs text-stone-500 pl-1 whitespace-nowrap">
-                100 Feet Anand Nagar Road · Ahmedabad
+                Balaji Complex, Vastrapur · Ahmedabad
               </p>
             </div>
           </div>
@@ -129,7 +129,7 @@ export function HomePage() {
             <div className="relative mx-auto aspect-[4/3] w-full max-w-xl overflow-hidden rounded-[24px] border border-[#e6e2dc] bg-white p-2.5 shadow-[0_16px_40px_-24px_rgba(110,38,53,0.22)] sm:rounded-[28px] sm:p-3 lg:max-w-none">
               <Image
                 src="/images/hero-composition.jpg"
-                alt="Premium assortment of dry fruits, almonds, cashews, pistachios, dates and walnuts from Raj Dryfruits Ahmedabad"
+                alt="Premium assortment of dry fruits, almonds, cashews, pistachios, dates and walnuts from Subhadra Dryfruits Ahmedabad"
                 fill
                 priority
                 className="object-contain p-1.5 sm:p-2"
@@ -331,9 +331,9 @@ export function HomePage() {
                     📍
                   </div>
                   <h3 className="mt-3 font-serif text-xl font-semibold text-ink sm:mt-4 sm:text-2xl">Store Location</h3>
-                  <p className="mt-1 text-xs font-medium text-[#6E2635] sm:text-sm">Anand Nagar Road, Ahmedabad</p>
+                  <p className="mt-1 text-xs font-medium text-[#6E2635] sm:text-sm">Vastrapur, Ahmedabad</p>
                   <p className="mt-2.5 max-w-sm text-xs leading-relaxed text-stone-500">
-                    Beside Natraj Medical, Radha Apartments, 100 Feet Anand Nagar Road, Jodhpur Village. Easy parking and warm service.
+                    Shop No. U/4, Balaji Complex, Opp. Gokul Hospital, Besides Falguni Gruh Udyog, Vastrapur. Easy parking and warm service.
                   </p>
                   <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-stone-200 bg-stone-50 px-3.5 py-1.5 text-[11px] text-stone-600 sm:px-4 sm:py-2 sm:text-xs">
                     <span className="h-2 w-2 rounded-full bg-emerald-500" />
@@ -354,7 +354,7 @@ export function HomePage() {
           <Reveal>
             <div className="text-center">
               <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E2635]">
-                The Raj Dryfruits Standard
+                The Subhadra Dryfruits Standard
               </p>
               <h2 className="mt-1.5 font-serif text-[1.75rem] font-medium leading-[1.12] text-ink sm:mt-2 sm:text-5xl sm:leading-tight">
                 From Everyday Snacking to Special Celebrations.

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Terms",
-  description: "Terms for browsing Raj Dry Fruits and sending a WhatsApp inquiry.",
+  description: "Terms for browsing Subhadra Dryfruits and sending a WhatsApp inquiry.",
 };
 
 export default function TermsPage() {
