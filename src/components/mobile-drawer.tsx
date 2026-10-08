@@ -131,7 +131,7 @@ export function MobileDrawer() {
                     <circle cx="9" cy="20" r="1.3" fill="currentColor" />
                     <circle cx="17" cy="20" r="1.3" fill="currentColor" />
                   </svg>
-                  <span>Inquiry Cart</span>
+                  <span>Shopping Cart</span>
                 </span>
                 {ready && totalCount > 0 ? (
                   <span className="rounded-full bg-[#6E2635] px-2 py-0.5 text-xs font-bold text-white">
@@ -145,12 +145,16 @@ export function MobileDrawer() {
           {/* Store & Contact CTAs */}
           <div className="mt-5 border-t border-stone-100 pt-5">
             <div className="flex flex-col gap-2.5">
-              <InquiryLink
-                onClick={() => setMenuOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setMenuOpen(false);
+                  setCartOpen(true);
+                }}
                 className="flex min-h-[48px] w-full items-center justify-center gap-2 rounded-full bg-[#6E2635] px-4 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-[#5A1E2B] active:scale-[0.99]"
               >
-                <span>WhatsApp Inquiry</span>
-              </InquiryLink>
+                <span>Proceed to Checkout ({totalCount})</span>
+              </button>
 
               <a
                 href={GOOGLE_MAPS_URL}

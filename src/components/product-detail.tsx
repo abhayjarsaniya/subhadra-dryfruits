@@ -17,25 +17,37 @@ import { useStore } from "@/components/store";
 export function ProductDetail({ product, related }: { product: Product; related: Product[] }) {
   const weights = weightsOf(product);
   const [weight, setWeight] = useState(defaultWeight(product));
-  const { lines, incrementItem, decrementItem, openInquiry } = useStore();
+  const { lines, incrementItem, decrementItem, addItem, setCartOpen } = useStore();
 
   const currentLine = lines.find((l) => l.slug === product.slug && l.weight === weight);
   const currentQty = currentLine ? currentLine.qty : 0;
 
   const price = priceFor(product, weight);
-  const collection = collections[product.category];
+  const collection = collections[product.category] || { nav: "Collection" };
   const bundle = product.category === "bundles";
 
+  const isOutOfStock = Boolean(product.available === false || (product as any).is_out_of_stock || (product as any).stock_qty <= 0);
+
   function handleAdd() {
-    incrementItem(product.slug, weight);
+    if (isOutOfStock) return;
+    addItem(product.slug, weight);
   }
 
   function handleIncrement() {
+    if (isOutOfStock) return;
     incrementItem(product.slug, weight);
   }
 
   function handleDecrement() {
     decrementItem(product.slug, weight);
+  }
+
+  function handleBuyNow() {
+    if (isOutOfStock) return;
+    if (currentQty === 0) {
+      addItem(product.slug, weight);
+    }
+    setCartOpen(true);
   }
 
   return (
@@ -58,51 +70,71 @@ export function ProductDetail({ product, related }: { product: Product; related:
             className="object-contain p-4 sm:p-8"
             sizes="(max-width: 1024px) 100vw, 50vw"
           />
+          {product.bestseller && (
+            <span className="absolute left-4 top-4 rounded-full border border-[#e6e2dc] bg-white/95 px-3 py-1 text-xs font-medium uppercase tracking-wider text-[#6E2635] shadow-xs">
+              Bestseller
+            </span>
+          )}
+          {isOutOfStock && (
+            <span className="absolute right-4 top-4 rounded-full bg-rose-600 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-white shadow-xs">
+              Out of Stock
+            </span>
+          )}
         </div>
 
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#6E2635]">
-              {product.origin} · {product.group}
-            </span>
-            {product.bestseller && (
-              <span className="rounded-full border border-[#6E2635]/30 bg-[#6E2635]/5 px-2.5 py-0.5 text-[10px] font-medium uppercase tracking-[0.14em] text-[#6E2635]">
-                Bestseller
-              </span>
-            )}
-          </div>
+        <div className="flex flex-col">
+          <p className="text-xs font-medium uppercase tracking-[0.18em] text-[#6E2635]">
+            {product.group}
+          </p>
 
-          <h1 className="mt-2 font-serif text-4xl font-medium leading-[1.05] text-ink sm:text-5xl lg:text-6xl">
+          <h1 className="mt-2 font-serif text-3xl font-medium leading-[1.15] text-ink sm:text-4xl lg:text-5xl">
             {product.name}
           </h1>
 
-          <p className="mt-4 text-base leading-relaxed text-stone-600 sm:text-lg">{product.short}</p>
-          <p className="mt-3 text-sm leading-relaxed text-stone-500 sm:text-base">{product.description}</p>
+          <p className="mt-3 text-sm leading-relaxed text-stone-600 sm:text-base">
+            {product.description}
+          </p>
 
-          {product.includes.length > 0 ? (
-            <div className="mt-6 rounded-[20px] border border-[#e6e2dc] bg-[#fbf9f6] p-5">
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6E2635]">
-                What&apos;s Inside
-              </h2>
-              <p className="mt-1 text-xs text-stone-500">
-                {product.includes.length} selections thoughtfully packed in this celebration box.
+          {bundle && product.includes.length > 0 && (
+            <div className="mt-6 rounded-2xl border border-stone-200 bg-[#fbf9f6] p-4 sm:p-5">
+              <p className="text-xs font-semibold uppercase tracking-[0.14em] text-ink">
+                What&apos;s Inside This Celebration Box:
               </p>
-              <ul className="mt-3 grid gap-2 sm:grid-cols-2">
-                {product.includes.map((entry) => (
-                  <li key={entry} className="flex items-center gap-2 text-xs font-medium text-stone-700 sm:text-sm">
-                    <span className="text-[#6E2635]">✓</span> {entry}
+              <ul className="mt-3 space-y-1.5 text-xs text-stone-600 sm:text-sm">
+                {product.includes.map((inc) => (
+                  <li key={inc} className="flex items-center gap-2">
+                    <span className="h-1.5 w-1.5 rounded-full bg-[#6E2635]" />
+                    <span>{inc}</span>
                   </li>
                 ))}
               </ul>
             </div>
-          ) : null}
+          )}
 
-          {/* Weight Selection - Section 16: White background + Matte Maroon border + Matte Maroon text when selected */}
-          <div className="mt-7">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.16em] text-stone-500">
-              {bundle ? "Box Size / Weight" : "Select Weight"}
-            </p>
-            <div className="mt-2.5 flex flex-wrap gap-2">
+          {/* Highlights */}
+          {product.highlights && product.highlights.length > 0 && (
+            <ul className="mt-5 space-y-2 border-y border-stone-100 py-4 text-xs text-stone-600 sm:text-sm">
+              {product.highlights.map((h) => (
+                <li key={h} className="flex items-center gap-2">
+                  <span className="text-[#6E2635]">✦</span>
+                  <span>{h}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+
+          {/* Weight Selection */}
+          <div className="mt-6">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold uppercase tracking-[0.14em] text-stone-500">
+                Select Pack Size / Weight
+              </span>
+              <span className="text-xs text-stone-500">
+                Available: {weights.join(", ")}
+              </span>
+            </div>
+
+            <div className="mt-3 flex flex-wrap gap-2" role="group" aria-label="Select weight">
               {weights.map((option) => {
                 const selected = option === weight;
                 return (
@@ -124,23 +156,38 @@ export function ProductDetail({ product, related }: { product: Product; related:
             </div>
           </div>
 
-          {/* Indicative Price */}
+          {/* Price */}
           <div className="mt-7 border-t border-stone-100 pt-5">
-            <p className="text-[10px] uppercase tracking-[0.16em] text-stone-400">Indicative Price</p>
-            <p className="font-serif text-3xl font-semibold text-ink sm:text-4xl">
-              {formatPrice(price)}
-            </p>
+            <p className="text-[10px] uppercase tracking-[0.16em] text-stone-400">Price (Inclusive of all taxes)</p>
+            <div className="mt-1 flex items-baseline gap-3">
+              <p className="font-serif text-3xl font-semibold text-ink sm:text-4xl">
+                {formatPrice(price)}
+              </p>
+              {isOutOfStock ? (
+                <span className="text-sm font-semibold text-rose-600">Currently Out of Stock</span>
+              ) : (
+                <span className="text-xs text-emerald-700">✓ In Stock & Ready to Ship</span>
+              )}
+            </div>
           </div>
 
-          {/* CTAs: Add to Inquiry (Primary) & Send Inquiry on WhatsApp (Secondary) */}
+          {/* CTAs: Add to Cart (Primary) & Buy Now */}
           <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:items-center">
-            {currentQty === 0 ? (
+            {isOutOfStock ? (
+              <button
+                type="button"
+                disabled
+                className="flex min-h-[50px] w-full flex-1 cursor-not-allowed items-center justify-center rounded-full bg-stone-200 px-6 py-3 text-[14.5px] font-semibold text-stone-500"
+              >
+                Out of Stock
+              </button>
+            ) : currentQty === 0 ? (
               <button
                 type="button"
                 onClick={handleAdd}
                 className="flex min-h-[50px] w-full flex-1 cursor-pointer items-center justify-center rounded-full bg-[#6E2635] px-6 py-3 text-[14.5px] font-semibold tracking-wide text-white shadow-md transition-all duration-200 active:scale-[0.99] sm:text-[15px] [@media(hover:hover)]:hover:-translate-y-[1px] [@media(hover:hover)]:hover:bg-[#5A1E2B]"
               >
-                Add to Inquiry
+                Add to Cart
               </button>
             ) : (
               <div className="flex min-h-[50px] w-full flex-1 items-center justify-between rounded-full border border-stone-200 bg-white p-1 text-[#6E2635] shadow-sm animate-page sm:max-w-xs">
@@ -154,87 +201,51 @@ export function ProductDetail({ product, related }: { product: Product; related:
                 </button>
                 <div className="text-center">
                   <span className="text-sm font-semibold sm:text-base">{currentQty}</span>
-                  <span className="ml-1 text-[11px] text-stone-400">in inquiry</span>
+                  <span className="ml-1 text-[11px] text-stone-400">in cart</span>
                 </div>
                 <button
                   type="button"
                   aria-label="Increase quantity"
-                  disabled={currentQty >= 10}
                   onClick={handleIncrement}
-                  className={`flex h-11 w-12 items-center justify-center rounded-r-full text-xl font-semibold transition-colors duration-150 active:scale-95 ${
-                    currentQty >= 10
-                      ? "cursor-not-allowed opacity-25"
-                      : "[@media(hover:hover)]:hover:bg-[#6E2635]/10"
-                  }`}
-                  title={currentQty >= 10 ? "Maximum quantity reached (10 per product)" : "Increase quantity"}
+                  className="flex h-11 w-12 items-center justify-center rounded-r-full text-xl font-semibold transition-colors duration-150 active:scale-95 [@media(hover:hover)]:hover:bg-[#6E2635]/10"
                 >
                   +
                 </button>
               </div>
             )}
 
-            <button
-              type="button"
-              onClick={() => {
-                const targetQty = currentQty > 0 ? currentQty : 1;
-                openInquiry([{ name: product.name, weight, qty: targetQty }]);
-              }}
-              className="inline-flex min-h-[50px] w-full flex-1 items-center justify-center gap-2 rounded-full border border-[#6E2635] bg-white px-5 py-3 text-[14px] font-semibold text-[#6E2635] shadow-sm transition-all duration-200 active:scale-[0.99] sm:text-[15px] [@media(hover:hover)]:hover:bg-[#6E2635]/5"
-            >
-              <svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" className="shrink-0">
-                <path d="M12.04 2C6.58 2 2.15 6.4 2.15 11.83c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.4a10 10 0 0 0 4.65 1.18h.01c5.46 0 9.89-4.4 9.89-9.84C21.94 6.4 17.5 2 12.04 2Zm5.76 14.04c-.24.68-1.4 1.3-1.94 1.38-.5.08-1.12.11-1.81-.11-.41-.14-.95-.31-1.63-.6-2.87-1.24-4.74-4.13-4.88-4.32-.14-.19-1.16-1.54-1.16-2.94 0-1.4.73-2.09 1-2.37.24-.28.64-.4.85-.4h.2c.2 0 .4-.02.58.02.22.04.46.24.64.64.2.46.64 1.58.7 1.7.06.12.1.26.02.42-.08.16-.12.26-.24.4-.12.14-.25.31-.36.42-.12.12-.24.24-.1.47.14.23.62 1.02 1.33 1.65.92.82 1.69 1.08 1.93 1.2.24.12.38.1.52-.06.14-.16.6-.7.76-.94.16-.24.32-.2.54-.12.22.08 1.4.66 1.64.78.24.12.4.18.46.28.06.1.06.58-.18 1.26Z" />
-              </svg>
-              <span>Send Inquiry on WhatsApp</span>
-            </button>
+            {!isOutOfStock && (
+              <button
+                type="button"
+                onClick={handleBuyNow}
+                className="flex min-h-[50px] w-full flex-1 cursor-pointer items-center justify-center rounded-full border border-[#6E2635] bg-white px-6 py-3 text-[14.5px] font-semibold tracking-wide text-[#6E2635] shadow-sm transition-all duration-200 active:scale-[0.99] sm:text-[15px] [@media(hover:hover)]:hover:bg-[#6E2635]/5"
+              >
+                Buy Now
+              </button>
+            )}
           </div>
 
-          {currentQty >= 10 && (
-            <p className="mt-2 text-xs font-medium text-[#6E2635]">
-              Maximum quantity reached (10 per product). You can still add other products.
-            </p>
-          )}
-
-          <p className="mt-3.5 text-xs leading-relaxed text-stone-400 sm:mt-4">
-            * Indicative prices only. Store confirms fresh availability, final pricing, delivery and discounts directly on WhatsApp.
-          </p>
-
-          <div className="mt-10 grid gap-6 border-t border-stone-100 pt-8 sm:grid-cols-2">
-            <div>
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6E2635]">
-                Highlights
-              </h2>
-              <ul className="mt-3 space-y-2 text-xs leading-relaxed text-stone-700 sm:text-sm">
-                {product.highlights.map((highlight) => (
-                  <li key={highlight} className="flex gap-2">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-[#6E2635]" />
-                    {highlight}
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h2 className="text-[11px] font-semibold uppercase tracking-[0.16em] text-[#6E2635]">
-                Storage &amp; Care
-              </h2>
-              <p className="mt-3 text-xs leading-relaxed text-stone-600 sm:text-sm">{product.storage}</p>
-            </div>
+          {/* Storage & Freshness note */}
+          <div className="mt-8 rounded-2xl border border-stone-200/70 bg-[#faf8f6] p-4 text-xs leading-relaxed text-stone-600">
+            <p className="font-semibold text-ink">Storage &amp; Freshness</p>
+            <p className="mt-1">{product.storage}</p>
           </div>
         </div>
       </div>
 
-      {related.length > 0 ? (
-        <section className="mt-20 border-t border-stone-100 pt-16">
-          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E2635]">You May Also Like</p>
-          <h2 className="mt-2 font-serif text-3xl font-medium text-ink sm:text-4xl">
-            Thoughtfully Selected for Gifting &amp; Sharing.
+      {/* Related Products */}
+      {related.length > 0 && (
+        <section className="mt-16 border-t border-stone-200/70 pt-12 sm:mt-24 sm:pt-16">
+          <h2 className="font-serif text-2xl font-medium text-ink sm:text-3xl">
+            You May Also Enjoy
           </h2>
-          <div className="mt-8 grid grid-cols-2 items-stretch gap-3 sm:gap-4 md:grid-cols-4">
+          <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-6 lg:grid-cols-4">
             {related.map((item) => (
               <ProductCard key={item.slug} product={item} />
             ))}
           </div>
         </section>
-      ) : null}
+      )}
     </div>
   );
 }

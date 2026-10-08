@@ -35,7 +35,7 @@ function GroupQueryWatcher({ onSelectGroup }: { onSelectGroup: (grp: string) => 
 export function CollectionView({ id }: { id: CollectionId }) {
   const collection = collections[id];
   const source = productsFor(id);
-  const { openInquiry } = useStore();
+  const { setCartOpen } = useStore();
 
   const [group, setGroup] = useState("All");
   const [category, setCategory] = useState("All");
@@ -165,20 +165,20 @@ export function CollectionView({ id }: { id: CollectionId }) {
 
         <div className="mt-16 rounded-[2rem] border border-[#e6e2dc] bg-[#fbf9f6] p-7 sm:p-10">
           <p className="text-xs font-semibold uppercase tracking-[0.2em] text-[#6E2635]">
-            Quick &amp; Direct WhatsApp Inquiry
+            Express Doorstep Delivery
           </p>
           <h2 className="mt-2 font-serif text-3xl font-medium text-ink sm:text-4xl">
-            Choose Your Favourites. We&apos;ll Take Care of the Rest.
+            Choose Your Favourites. We&apos;ll Dispatch Right Away.
           </h2>
           <p className="mt-3 max-w-xl text-xs leading-relaxed text-stone-600 sm:text-sm">
-            Select weights and add as many items as you wish (up to 10 per single product). Store confirms fresh availability, final pricing, and doorstep delivery directly on WhatsApp.
+            Select weights and add as many items as you wish to your cart. Complimentary shipping on orders above ₹1,499 with secure online payment or Cash on Delivery.
           </p>
           <button
             type="button"
-            onClick={() => openInquiry()}
+            onClick={() => setCartOpen(true)}
             className="mt-6 inline-flex min-h-[50px] w-full items-center justify-center rounded-full bg-[#6E2635] px-7 py-3 text-sm font-semibold text-white shadow-md transition hover:bg-[#5A1E2B] active:scale-[0.99] sm:w-auto"
           >
-            Send Inquiry on WhatsApp →
+            View Cart &amp; Checkout →
           </button>
         </div>
       </section>

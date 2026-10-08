@@ -70,7 +70,7 @@ export function ProductCard({
     updateQty(product.slug, sheetWeight, sheetQty);
     setWeight(sheetWeight);
     setMobileSheetOpen(false);
-    showNotice("Added to inquiry ✓", "ok");
+    showNotice("Added to cart ✓", "ok");
   }
 
   return (

@@ -23,10 +23,12 @@ const explore = [
 ];
 
 const customer = [
-  { href: "/contact", label: "WhatsApp Inquiry" },
+  { href: "/checkout", label: "Instant Checkout" },
+  { href: "/contact", label: "Help & Support" },
   { href: "/shipping", label: "Shipping Information" },
   { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms" },
+  { href: "/terms", label: "Terms & Conditions" },
+  { href: "/admin", label: "Store Admin Portal" },
 ];
 
 export function Footer() {

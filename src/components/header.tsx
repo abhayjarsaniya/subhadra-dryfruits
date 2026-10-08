@@ -106,10 +106,14 @@ export function Header() {
             ) : null}
           </button>
 
-          {/* Desktop WhatsApp Action (Large screens xl+) */}
-          <InquiryLink className="hidden h-10 items-center justify-center rounded-full bg-[#6E2635] px-[18px] text-xs font-semibold text-white shadow-sm transition hover:bg-[#5A1E2B] xl:inline-flex">
-            Send Inquiry on WhatsApp
-          </InquiryLink>
+          {/* Desktop Checkout / Cart Action (Large screens xl+) */}
+          <button
+            type="button"
+            onClick={() => setCartOpen(true)}
+            className="hidden h-10 items-center justify-center rounded-full bg-[#6E2635] px-[20px] text-xs font-semibold text-white shadow-sm transition hover:bg-[#5A1E2B] xl:inline-flex"
+          >
+            Checkout ({totalCount})
+          </button>
 
           {/* Mobile / Tablet Hamburger & Close Button */}
           <button

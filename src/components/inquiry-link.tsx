@@ -1,20 +1,18 @@
 "use client";
 
-import type { InquiryLine } from "@/lib/whatsapp";
 import { useStore } from "@/components/store";
 
 export function InquiryLink({
   children,
   className,
-  lines,
   onClick,
 }: {
   children: React.ReactNode;
   className?: string;
-  lines?: InquiryLine[];
+  lines?: any[];
   onClick?: () => void;
 }) {
-  const { openInquiry } = useStore();
+  const { setCartOpen } = useStore();
 
   return (
     <button
@@ -22,7 +20,7 @@ export function InquiryLink({
       className={className}
       onClick={() => {
         onClick?.();
-        openInquiry(lines);
+        setCartOpen(true);
       }}
     >
       {children}
