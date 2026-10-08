@@ -35,6 +35,10 @@ data/*.db-shm
 *.cert
 *.crt
 *.pfx
+*serviceAccount*.json
+*firebase-adminsdk*.json
+*service-account*.json
+firebase-admin-key.json
 
 # OS files
 .DS_Store

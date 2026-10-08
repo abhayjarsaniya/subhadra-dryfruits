@@ -7,6 +7,9 @@ import { useRouter } from "next/navigation";
 import { formatPrice } from "@/lib/format";
 import { useStore } from "@/components/store";
 import { getProduct, priceFor } from "@/data/catalog";
+import { useAuth } from "@/lib/auth-context";
+import { AuthModal } from "@/components/auth-modal";
+import { MapPin, UserCheck, LogIn } from "lucide-react";
 
 type ShippingSettings = {
   shipping_fee: number;
@@ -18,6 +21,8 @@ type ShippingSettings = {
 export default function CheckoutPage() {
   const router = useRouter();
   const { lines, totalCount, clearCart, showNotice } = useStore();
+  const { user, profile, addresses } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   const [dbProductMap, setDbProductMap] = useState<Record<string, any>>({});
   const [shippingConfig, setShippingConfig] = useState<ShippingSettings>({
@@ -48,6 +53,27 @@ export default function CheckoutPage() {
   // Submission state
   const [submitting, setSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+
+  useEffect(() => {
+    if (profile?.displayName && !name) setName(profile.displayName);
+    if ((profile?.phoneNumber || user?.phoneNumber) && !phone) {
+      setPhone((profile?.phoneNumber || user?.phoneNumber || "").replace("+91", ""));
+    }
+    if ((profile?.email || user?.email) && !email) {
+      setEmail(profile?.email || user?.email || "");
+    }
+
+    const defaultAddr = addresses.find((a) => a.isDefault) || addresses[0];
+    if (defaultAddr && !address1) {
+      if (defaultAddr.fullName) setName(defaultAddr.fullName);
+      if (defaultAddr.phone) setPhone(defaultAddr.phone.replace("+91", ""));
+      setAddress1(defaultAddr.addressLine1);
+      setAddress2(defaultAddr.addressLine2 || "");
+      setCity(defaultAddr.city);
+      setState(defaultAddr.state);
+      setPincode(defaultAddr.pincode);
+    }
+  }, [profile, user, addresses, name, phone, email, address1]);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -153,6 +179,7 @@ export default function CheckoutPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          customer_uid: user?.uid || "",
           customer_name: name.trim(),
           customer_phone: phone.trim(),
           customer_email: email.trim(),
@@ -252,6 +279,61 @@ export default function CheckoutPage() {
               <span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#6E2635] text-xs font-bold text-white">1</span>
               <span>Contact &amp; Delivery Information</span>
             </h2>
+
+            {/* Account Status / Login Banner */}
+            {!user ? (
+              <div className="mt-4 flex items-center justify-between rounded-2xl bg-[#FAF8F6] p-3.5 border border-stone-200/80">
+                <div className="flex items-center gap-2.5">
+                  <LogIn className="h-4 w-4 text-[#6E2635]" />
+                  <div>
+                    <p className="text-xs font-semibold text-ink">Have a Subhadra account?</p>
+                    <p className="text-[11px] text-stone-500">Sign in for 1-click address autofill and order tracking</p>
+                  </div>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setAuthModalOpen(true)}
+                  className="rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-xs font-semibold text-[#6E2635] shadow-2xs hover:bg-stone-50"
+                >
+                  Sign In
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4 flex items-center justify-between rounded-2xl bg-emerald-50/60 p-3 border border-emerald-200/60 text-xs text-emerald-800">
+                <div className="flex items-center gap-2">
+                  <UserCheck className="h-4 w-4 text-emerald-600" />
+                  <span>Logged in as <strong>{profile?.displayName || user.email || user.phoneNumber}</strong></span>
+                </div>
+              </div>
+            )}
+
+            {/* Saved Addresses Selector if available */}
+            {user && addresses.length > 0 && (
+              <div className="mt-4 space-y-2">
+                <p className="text-xs font-semibold text-stone-600">Select Saved Address:</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  {addresses.map((addr) => (
+                    <button
+                      key={addr.id}
+                      type="button"
+                      onClick={() => {
+                        if (addr.fullName) setName(addr.fullName);
+                        if (addr.phone) setPhone(addr.phone.replace("+91", ""));
+                        setAddress1(addr.addressLine1);
+                        setAddress2(addr.addressLine2 || "");
+                        setCity(addr.city);
+                        setState(addr.state);
+                        setPincode(addr.pincode);
+                      }}
+                      className="text-left rounded-xl border border-stone-200 bg-white p-3 hover:border-[#6E2635] transition shadow-2xs"
+                    >
+                      <p className="text-xs font-bold text-ink">{addr.fullName}</p>
+                      <p className="text-[11px] text-stone-500 line-clamp-1">{addr.addressLine1}, {addr.city}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
 
             <div className="mt-6 grid gap-4 sm:grid-cols-2">
               <label className="sm:col-span-2 block">
@@ -549,6 +631,8 @@ export default function CheckoutPage() {
           </div>
         </div>
       </form>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </div>
   );
 }

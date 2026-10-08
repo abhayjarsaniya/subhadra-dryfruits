@@ -8,6 +8,7 @@ import { InquiryForm } from "@/components/inquiry-form";
 import { MobileDrawer } from "@/components/mobile-drawer";
 import { SearchDialog } from "@/components/search-dialog";
 import { StoreProvider } from "@/components/store";
+import { AuthProvider } from "@/lib/auth-context";
 // Subhadra Dryfruits official website layout
 import "./globals.css";
 
@@ -99,17 +100,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${serif.variable} ${sans.variable} ${script.variable}`}>
       <body className="bg-white font-sans text-ink antialiased">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-        <StoreProvider>
-          <Header />
-          <main className="pb-24 lg:pb-0">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <SearchDialog />
-          <NoticeToast />
-          <InquiryForm />
-          <MobileDock />
-          <MobileDrawer />
-        </StoreProvider>
+        <AuthProvider>
+          <StoreProvider>
+            <Header />
+            <main className="pb-24 lg:pb-0">{children}</main>
+            <Footer />
+            <CartDrawer />
+            <SearchDialog />
+            <NoticeToast />
+            <InquiryForm />
+            <MobileDock />
+            <MobileDrawer />
+          </StoreProvider>
+        </AuthProvider>
       </body>
     </html>
   );

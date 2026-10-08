@@ -139,6 +139,18 @@ export function MobileDrawer() {
                   </span>
                 ) : null}
               </button>
+
+              <Link
+                href="/account"
+                onClick={() => setMenuOpen(false)}
+                className="flex min-h-[44px] w-full items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium text-stone-700 transition hover:bg-stone-50 hover:text-[#6E2635]"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                  <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
+                </svg>
+                <span>My Account / Orders</span>
+              </Link>
             </div>
           </div>
 

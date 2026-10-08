@@ -104,6 +104,7 @@ function initDb(db: Database.Database) {
     CREATE TABLE IF NOT EXISTS orders (
       id TEXT PRIMARY KEY,
       order_number TEXT UNIQUE NOT NULL,
+      customer_uid TEXT DEFAULT '',
       customer_name TEXT NOT NULL,
       customer_phone TEXT NOT NULL,
       customer_email TEXT DEFAULT '',
@@ -182,6 +183,11 @@ function initDb(db: Database.Database) {
       updated_at TEXT DEFAULT (datetime('now'))
     );
   `);
+
+  // Safe schema migrations
+  try {
+    db.exec("ALTER TABLE orders ADD COLUMN customer_uid TEXT DEFAULT ''");
+  } catch {}
 
   // Seed default data if empty
   seedInitialData(db);

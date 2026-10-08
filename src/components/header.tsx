@@ -1,10 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { BrandMark } from "@/components/brand-mark";
 import { InquiryLink } from "@/components/inquiry-link";
 import { useStore } from "@/components/store";
+import { useAuth } from "@/lib/auth-context";
+import { AuthModal } from "@/components/auth-modal";
 
 const links = [
   { href: "/", label: "Home" },
@@ -36,6 +39,8 @@ function CartBagGlyph() {
 export function Header() {
   const pathname = usePathname();
   const { totalCount, ready, setCartOpen, menuOpen, setMenuOpen, setSearchOpen } = useStore();
+  const { user, profile } = useAuth();
+  const [authModalOpen, setAuthModalOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 border-b border-stone-200/80 bg-white/95 backdrop-blur-md">
@@ -87,6 +92,36 @@ export function Header() {
             </svg>
             <span className="hidden text-xs font-medium sm:inline">Search</span>
           </button>
+
+          {/* Customer Account Button */}
+          {user ? (
+            <Link
+              href="/account"
+              className="inline-flex h-9 w-9 min-[360px]:h-10 min-[360px]:w-10 shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#e6e2dc] text-stone-700 transition hover:border-[#6E2635] hover:text-[#6E2635] sm:w-auto sm:px-3"
+              aria-label="My Account"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
+              <span className="hidden text-xs font-medium sm:inline">
+                {profile?.displayName?.split(" ")[0] || "Account"}
+              </span>
+            </Link>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setAuthModalOpen(true)}
+              className="inline-flex h-9 w-9 min-[360px]:h-10 min-[360px]:w-10 shrink-0 items-center justify-center gap-1.5 rounded-full border border-[#e6e2dc] text-stone-700 transition hover:border-[#6E2635] hover:text-[#6E2635] sm:w-auto sm:px-3"
+              aria-label="Sign In"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+                <circle cx="12" cy="7" r="4" stroke="currentColor" strokeWidth="1.8" />
+              </svg>
+              <span className="hidden text-xs font-medium sm:inline">Sign In</span>
+            </button>
+          )}
 
           {/* Cart Icon + Badge */}
           <button
@@ -147,6 +182,8 @@ export function Header() {
           </button>
         </div>
       </div>
+
+      <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
     </header>
   );
 }

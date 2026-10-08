@@ -72,6 +72,7 @@ export type DbHomepageSection = {
 export type DbOrder = {
   id: string;
   order_number: string;
+  customer_uid?: string;
   customer_name: string;
   customer_phone: string;
   customer_email: string;
@@ -607,6 +608,7 @@ function rowToOrder(row: any): DbOrder {
 }
 
 export function createOrder(orderInput: {
+  customer_uid?: string;
   customer_name: string;
   customer_phone: string;
   customer_email?: string;
@@ -740,13 +742,13 @@ export function createOrder(orderInput: {
     // 7. Insert Order record
     db.prepare(`
       INSERT INTO orders (
-        id, order_number, customer_name, customer_phone, customer_email,
+        id, order_number, customer_uid, customer_name, customer_phone, customer_email,
         address_line1, address_line2, city, state, pincode, delivery_notes,
         subtotal, discount_amount, coupon_code, shipping_charge, total_amount,
         payment_method, payment_status, payment_gateway_ref, payment_gateway_order_id,
         order_status, items_json
       ) VALUES (
-        ?, ?, ?, ?, ?,
+        ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?, ?,
         ?, ?, ?, ?, ?,
         ?, ?, ?, ?,
@@ -755,6 +757,7 @@ export function createOrder(orderInput: {
     `).run(
       order_id,
       order_number,
+      orderInput.customer_uid || "",
       orderInput.customer_name,
       orderInput.customer_phone,
       orderInput.customer_email || "",
