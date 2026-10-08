@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   LayoutDashboard,
   Package,
@@ -11,12 +11,13 @@ import {
   Users,
   Tags,
   Truck,
-  Sliders,
   LogOut,
   Menu,
   X,
   ExternalLink,
   SlidersHorizontal,
+  Shield,
+  CircleDot,
 } from "lucide-react";
 
 const navigation = [
@@ -34,16 +35,68 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   const pathname = usePathname();
   const router = useRouter();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
 
-  // Skip layout on login page
-  if (pathname === "/admin/login") {
+  // Skip auth check and layout on login page
+  const isLoginPage = pathname === "/admin/login";
+
+  useEffect(() => {
+    if (isLoginPage) return;
+
+    let mounted = true;
+    async function checkAuth() {
+      try {
+        const token = typeof window !== "undefined" ? localStorage.getItem("subhadra_admin_token") || "" : "";
+        const res = await fetch("/api/admin/auth", {
+          headers: { "x-admin-token": token },
+        });
+        const data = await res.json();
+        if (mounted) {
+          if (!data.authenticated) {
+            router.replace("/admin/login");
+          } else {
+            setIsAuthenticated(true);
+          }
+        }
+      } catch {
+        if (mounted) {
+          router.replace("/admin/login");
+        }
+      }
+    }
+
+    checkAuth();
+    return () => {
+      mounted = false;
+    };
+  }, [pathname, isLoginPage, router]);
+
+  async function handleLogout() {
+    try {
+      await fetch("/api/admin/auth", { method: "DELETE" });
+    } catch {}
+    if (typeof window !== "undefined") {
+      localStorage.removeItem("subhadra_admin_token");
+      document.cookie = "store_admin_session=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    }
+    router.push("/admin/login");
+    router.refresh();
+  }
+
+  if (isLoginPage) {
     return <>{children}</>;
   }
 
-  async function handleLogout() {
-    await fetch("/api/admin/auth", { method: "DELETE" });
-    router.push("/admin/login");
-    router.refresh();
+  // Show clean spinner while verifying credentials
+  if (isAuthenticated === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#FAF8F6]">
+        <div className="flex flex-col items-center gap-3 text-stone-500">
+          <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#6E2635] border-t-transparent" />
+          <p className="text-xs font-medium">Verifying Administrator Access...</p>
+        </div>
+      </div>
+    );
   }
 
   return (
@@ -51,11 +104,17 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
       {/* Sidebar for Desktop */}
       <aside className="hidden w-64 flex-col border-r border-stone-200/80 bg-white lg:flex">
         <div className="flex h-16 items-center justify-between border-b border-stone-100 px-6">
-          <Link href="/admin" className="font-serif text-lg font-bold tracking-tight text-[#6E2635]">
-            Store Admin
+          <Link href="/admin" className="flex items-center gap-2">
+            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#6E2635] text-white">
+              <Shield className="h-4 w-4" />
+            </span>
+            <span className="font-serif text-base font-bold tracking-tight text-[#6E2635]">
+              Admin Panel
+            </span>
           </Link>
-          <span className="rounded-full bg-[#6E2635]/10 px-2 py-0.5 text-[10px] font-bold text-[#6E2635]">
-            LIVE DB
+          <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[10px] font-bold text-emerald-700">
+            <CircleDot className="h-2.5 w-2.5 text-emerald-500 animate-pulse" />
+            <span>LIVE</span>
           </span>
         </div>
 
@@ -81,10 +140,14 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
         </nav>
 
         <div className="border-t border-stone-100 p-4 space-y-2">
+          <div className="rounded-xl bg-[#FAF8F6] p-2.5 text-[11px] text-stone-500">
+            <p className="font-semibold text-stone-800">Signed in as Administrator</p>
+            <p className="text-[10px] text-stone-400">Database connected (SQLite WAL)</p>
+          </div>
           <Link
             href="/"
             target="_blank"
-            className="flex items-center justify-between rounded-xl border border-stone-200 bg-[#FAF8F6] px-3.5 py-2 text-xs font-medium text-stone-700 hover:bg-stone-100"
+            className="flex items-center justify-between rounded-xl border border-stone-200 bg-white px-3.5 py-2 text-xs font-medium text-stone-700 hover:bg-stone-50"
           >
             <span>View Live Store</span>
             <ExternalLink className="h-3.5 w-3.5" />

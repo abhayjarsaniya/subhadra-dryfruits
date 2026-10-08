@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, Layers, Check, X } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminCategoriesPage() {
   const [categories, setCategories] = useState<any[]>([]);
@@ -18,7 +19,7 @@ export default function AdminCategoriesPage() {
   async function fetchCategories() {
     setLoading(true);
     try {
-      const res = await fetch("/api/categories?includeInactive=true");
+      const res = await adminFetch("/api/categories?includeInactive=true");
       const data = await res.json();
       setCategories(Array.isArray(data) ? data : []);
     } catch {
@@ -56,7 +57,7 @@ export default function AdminCategoriesPage() {
     if (!editCategory) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/categories", {
+      const res = await adminFetch("/api/categories", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editCategory),
@@ -76,7 +77,7 @@ export default function AdminCategoriesPage() {
   async function handleDeleteCategory(id: string) {
     if (!confirm("Are you sure you want to delete this category?")) return;
     try {
-      const res = await fetch(`/api/categories?id=${id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/categories?id=${id}`, { method: "DELETE" });
       if (res.ok) fetchCategories();
     } catch {}
   }

@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, Sliders, X } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminSectionsPage() {
   const [sections, setSections] = useState<any[]>([]);
@@ -20,7 +21,7 @@ export default function AdminSectionsPage() {
   async function fetchSections() {
     setLoading(true);
     try {
-      const res = await fetch("/api/sections?includeInactive=true");
+      const res = await adminFetch("/api/sections?includeInactive=true");
       const data = await res.json();
       setSections(Array.isArray(data) ? data : []);
     } catch {
@@ -31,7 +32,7 @@ export default function AdminSectionsPage() {
 
   async function fetchCategories() {
     try {
-      const res = await fetch("/api/categories?includeInactive=true");
+      const res = await adminFetch("/api/categories?includeInactive=true");
       const data = await res.json();
       setCategories(Array.isArray(data) ? data : []);
     } catch {}
@@ -65,7 +66,7 @@ export default function AdminSectionsPage() {
     if (!editSection) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/sections", {
+      const res = await adminFetch("/api/sections", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editSection),
@@ -85,7 +86,7 @@ export default function AdminSectionsPage() {
   async function handleDeleteSection(id: string) {
     if (!confirm("Are you sure you want to delete this section?")) return;
     try {
-      const res = await fetch(`/api/sections?id=${id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/sections?id=${id}`, { method: "DELETE" });
       if (res.ok) fetchSections();
     } catch {}
   }

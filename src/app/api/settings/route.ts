@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getStoreSettings, saveStoreSettings } from "@/lib/repository";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   const settings = getStoreSettings();
   // Safe public subset if unauthenticated or full if admin
-  const isAuth = await isAdminAuthenticated();
+  const isAuth = await isAdminAuthenticated(req);
   if (!isAuth) {
     return NextResponse.json({
       shipping_fee: settings.shipping_fee,
@@ -21,7 +21,7 @@ export async function GET() {
 }
 
 export async function POST(req: NextRequest) {
-  const isAuth = await isAdminAuthenticated();
+  const isAuth = await isAdminAuthenticated(req);
   if (!isAuth) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }

@@ -16,6 +16,7 @@ import {
   ChevronRight,
   Filter,
 } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -47,7 +48,7 @@ export default function AdminProductsPage() {
 
   async function fetchCategories() {
     try {
-      const res = await fetch("/api/categories?includeInactive=true");
+      const res = await adminFetch("/api/categories?includeInactive=true");
       const data = await res.json();
       setCategories(Array.isArray(data) ? data : []);
     } catch {}
@@ -57,7 +58,7 @@ export default function AdminProductsPage() {
     setLoading(true);
     try {
       const offset = (page - 1) * limit;
-      const res = await fetch(
+      const res = await adminFetch(
         `/api/products?activeOnly=false&limit=${limit}&offset=${offset}&category=${categoryFilter}&search=${encodeURIComponent(
           search
         )}`
@@ -129,7 +130,7 @@ export default function AdminProductsPage() {
     if (!editProduct) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/products", {
+      const res = await adminFetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editProduct),
@@ -149,7 +150,7 @@ export default function AdminProductsPage() {
   async function handleDeleteProduct(id: string) {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`/api/products?id=${id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/products?id=${id}`, { method: "DELETE" });
       if (res.ok) {
         fetchProducts();
       }
@@ -160,7 +161,7 @@ export default function AdminProductsPage() {
     if (selectedIds.length === 0) return;
     if (!confirm(`Are you sure you want to delete ${selectedIds.length} products?`)) return;
     try {
-      const res = await fetch(`/api/products?bulkIds=${selectedIds.join(",")}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/products?bulkIds=${selectedIds.join(",")}`, { method: "DELETE" });
       if (res.ok) {
         setSelectedIds([]);
         fetchProducts();
@@ -171,7 +172,7 @@ export default function AdminProductsPage() {
   async function handleToggleStatus(prod: any, field: string) {
     const updated = { ...prod, [field]: !prod[field] };
     try {
-      await fetch("/api/products", {
+      await adminFetch("/api/products", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updated),

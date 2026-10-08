@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { formatPrice } from "@/lib/format";
 import { Search, Users, Mail, Phone, ShoppingBag } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminCustomersPage() {
   const [customers, setCustomers] = useState<any[]>([]);
@@ -16,7 +17,7 @@ export default function AdminCustomersPage() {
   async function fetchCustomers() {
     setLoading(true);
     try {
-      const res = await fetch(`/api/customers?search=${encodeURIComponent(search)}`);
+      const res = await adminFetch(`/api/customers?search=${encodeURIComponent(search)}`);
       const data = await res.json();
       setCustomers(Array.isArray(data) ? data : []);
     } catch {

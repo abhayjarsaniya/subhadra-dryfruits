@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import { Search, Filter, Eye, X, CheckCircle, Clock, Truck, Ban } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<any[]>([]);
@@ -22,7 +23,7 @@ export default function AdminOrdersPage() {
   async function fetchOrders() {
     setLoading(true);
     try {
-      const res = await fetch(
+      const res = await adminFetch(
         `/api/orders?status=${statusFilter}&search=${encodeURIComponent(search)}`
       );
       const data = await res.json();
@@ -36,7 +37,7 @@ export default function AdminOrdersPage() {
 
   async function handleUpdateStatus(orderId: string, order_status: string) {
     try {
-      const res = await fetch("/api/orders", {
+      const res = await adminFetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: orderId, order_status }),
@@ -52,7 +53,7 @@ export default function AdminOrdersPage() {
 
   async function handleUpdatePayment(orderId: string, payment_status: string) {
     try {
-      const res = await fetch("/api/orders", {
+      const res = await adminFetch("/api/orders", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: orderId, payment_status }),

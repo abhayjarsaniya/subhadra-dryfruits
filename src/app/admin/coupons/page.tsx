@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Plus, Trash2, Edit2, Tags, X, Check } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminCouponsPage() {
   const [coupons, setCoupons] = useState<any[]>([]);
@@ -18,7 +19,7 @@ export default function AdminCouponsPage() {
   async function fetchCoupons() {
     setLoading(true);
     try {
-      const res = await fetch("/api/coupons");
+      const res = await adminFetch("/api/coupons");
       const data = await res.json();
       setCoupons(Array.isArray(data) ? data : []);
     } catch {
@@ -52,7 +53,7 @@ export default function AdminCouponsPage() {
     if (!editCoupon) return;
     setSaving(true);
     try {
-      const res = await fetch("/api/coupons", {
+      const res = await adminFetch("/api/coupons", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(editCoupon),
@@ -72,7 +73,7 @@ export default function AdminCouponsPage() {
   async function handleDeleteCoupon(id: string) {
     if (!confirm("Are you sure you want to delete this coupon?")) return;
     try {
-      const res = await fetch(`/api/coupons?id=${id}`, { method: "DELETE" });
+      const res = await adminFetch(`/api/coupons?id=${id}`, { method: "DELETE" });
       if (res.ok) fetchCoupons();
     } catch {}
   }

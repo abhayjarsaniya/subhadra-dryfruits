@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Truck, CreditCard, Bell, Save, Check } from "lucide-react";
+import { adminFetch } from "@/lib/admin-client";
 
 export default function AdminSettingsPage() {
   const [settings, setSettings] = useState<any>({
@@ -29,7 +30,7 @@ export default function AdminSettingsPage() {
   async function fetchSettings() {
     setLoading(true);
     try {
-      const res = await fetch("/api/settings");
+      const res = await adminFetch("/api/settings");
       const data = await res.json();
       if (data) setSettings((prev: any) => ({ ...prev, ...data }));
     } catch {
@@ -43,7 +44,7 @@ export default function AdminSettingsPage() {
     setSaving(true);
     setSavedSuccess(false);
     try {
-      const res = await fetch("/api/settings", {
+      const res = await adminFetch("/api/settings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(settings),
@@ -51,8 +52,12 @@ export default function AdminSettingsPage() {
       if (res.ok) {
         setSavedSuccess(true);
         setTimeout(() => setSavedSuccess(false), 3000);
+      } else {
+        const data = await res.json();
+        alert("Error saving settings: " + (data.error || "Failed"));
       }
-    } catch {
+    } catch (err: any) {
+      alert("Error saving settings: " + err.message);
     } finally {
       setSaving(false);
     }
