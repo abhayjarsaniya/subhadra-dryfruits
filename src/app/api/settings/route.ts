@@ -2,22 +2,37 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getStoreSettings, saveStoreSettings } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const settings = getStoreSettings();
-  // Safe public subset if unauthenticated or full if admin
-  const isAuth = await isAdminAuthenticated(req);
-  if (!isAuth) {
+  try {
+    const settings = getStoreSettings();
+    // Safe public subset if unauthenticated or full if admin
+    const isAuth = await isAdminAuthenticated(req);
+    if (!isAuth) {
+      return NextResponse.json({
+        shipping_fee: settings.shipping_fee,
+        free_shipping_threshold: settings.free_shipping_threshold,
+        shipping_notes: settings.shipping_notes,
+        currency_symbol: settings.currency_symbol,
+        enable_cod: settings.enable_cod,
+        announcement_bar_enabled: settings.announcement_bar_enabled,
+        announcement_bar_text: settings.announcement_bar_text,
+      });
+    }
+    return NextResponse.json(settings);
+  } catch (error: any) {
+    console.error("Settings GET error:", error);
     return NextResponse.json({
-      shipping_fee: settings.shipping_fee,
-      free_shipping_threshold: settings.free_shipping_threshold,
-      shipping_notes: settings.shipping_notes,
-      currency_symbol: settings.currency_symbol,
-      enable_cod: settings.enable_cod,
-      announcement_bar_enabled: settings.announcement_bar_enabled,
-      announcement_bar_text: settings.announcement_bar_text,
+      shipping_fee: 99,
+      free_shipping_threshold: 1499,
+      shipping_notes: "Standard fast doorstep delivery across India in 2–4 business days.",
+      currency_symbol: "₹",
+      enable_cod: true,
+      announcement_bar_enabled: true,
+      announcement_bar_text: "Complimentary express shipping on all orders above ₹1,499 · Fresh harvest guaranteed",
     });
   }
-  return NextResponse.json(settings);
 }
 
 export async function POST(req: NextRequest) {

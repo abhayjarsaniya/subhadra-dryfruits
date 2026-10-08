@@ -2,11 +2,18 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getAllCategories, saveCategory, deleteCategory } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const includeInactive = searchParams.get("includeInactive") === "true";
-  const categories = getAllCategories(includeInactive);
-  return NextResponse.json(categories);
+  try {
+    const { searchParams } = new URL(req.url);
+    const includeInactive = searchParams.get("includeInactive") === "true";
+    const categories = getAllCategories(includeInactive);
+    return NextResponse.json(categories);
+  } catch (error: any) {
+    console.error("Categories GET error:", error);
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(req: NextRequest) {

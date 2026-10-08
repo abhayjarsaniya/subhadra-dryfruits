@@ -8,30 +8,37 @@ import {
   updatePaymentStatus,
 } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const id = searchParams.get("id");
+  try {
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get("id");
 
-  // Single order lookup (can be accessed by confirmation page or admin)
-  if (id) {
-    const order = getOrderById(id);
-    if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
-    return NextResponse.json(order);
+    // Single order lookup (can be accessed by confirmation page or admin)
+    if (id) {
+      const order = getOrderById(id);
+      if (!order) return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      return NextResponse.json(order);
+    }
+
+    // Admin listing orders
+    const isAuth = await isAdminAuthenticated(req);
+    if (!isAuth) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const status = searchParams.get("status") || undefined;
+    const search = searchParams.get("search") || undefined;
+    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
+    const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined;
+
+    const result = getAllOrders({ status, search, limit, offset });
+    return NextResponse.json(result);
+  } catch (error: any) {
+    console.error("Orders GET error:", error);
+    return NextResponse.json({ orders: [], total: 0 });
   }
-
-  // Admin listing orders
-  const isAuth = await isAdminAuthenticated(req);
-  if (!isAuth) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const status = searchParams.get("status") || undefined;
-  const search = searchParams.get("search") || undefined;
-  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
-  const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined;
-
-  const result = getAllOrders({ status, search, limit, offset });
-  return NextResponse.json(result);
 }
 
 export async function POST(req: NextRequest) {

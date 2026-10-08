@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
@@ -11,7 +13,7 @@ export async function GET(req: NextRequest) {
     }
 
     const db = getDb();
-    // Query orders matching customer_uid or customer phone
+    // Query orders matching customer_uid or customer email
     const orders = db
       .prepare(
         "SELECT * FROM orders WHERE customer_uid = ? OR customer_email = ? ORDER BY created_at DESC"
@@ -25,6 +27,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ orders: parsed });
   } catch (error: any) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    console.error("Customer orders GET error:", error);
+    return NextResponse.json({ orders: [] });
   }
 }

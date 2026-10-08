@@ -6,11 +6,18 @@ import {
   deleteHomepageSection,
 } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const includeInactive = searchParams.get("includeInactive") === "true";
-  const sections = getAllHomepageSections(includeInactive);
-  return NextResponse.json(sections);
+  try {
+    const { searchParams } = new URL(req.url);
+    const includeInactive = searchParams.get("includeInactive") === "true";
+    const sections = getAllHomepageSections(includeInactive);
+    return NextResponse.json(sections);
+  } catch (error: any) {
+    console.error("Sections GET error:", error);
+    return NextResponse.json([]);
+  }
 }
 
 export async function POST(req: NextRequest) {

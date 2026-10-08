@@ -1,24 +1,65 @@
 import Database from "better-sqlite3";
 import path from "path";
 import fs from "fs";
+import os from "os";
 import { products as seedProducts, collections as seedCollections } from "@/data/catalog";
 
-const DB_DIR = path.join(process.cwd(), "data");
-if (!fs.existsSync(DB_DIR)) {
-  fs.mkdirSync(DB_DIR, { recursive: true });
-}
+const isServerless = Boolean(
+  process.env.VERCEL ||
+  process.env.AWS_LAMBDA_FUNCTION_NAME ||
+  process.env.LAMBDA_TASK_ROOT ||
+  process.env.NOW_REGION
+);
 
-const DB_PATH = path.join(DB_DIR, "ecommerce.db");
+function getDbPath(): string {
+  if (isServerless) {
+    const tmpDir = path.join(os.tmpdir(), "subhadra-data");
+    try {
+      if (!fs.existsSync(tmpDir)) {
+        fs.mkdirSync(tmpDir, { recursive: true });
+      }
+      return path.join(tmpDir, "ecommerce.db");
+    } catch {
+      return path.join(os.tmpdir(), "ecommerce.db");
+    }
+  }
+
+  const localDir = path.join(process.cwd(), "data");
+  try {
+    if (!fs.existsSync(localDir)) {
+      fs.mkdirSync(localDir, { recursive: true });
+    }
+    return path.join(localDir, "ecommerce.db");
+  } catch {
+    return path.join(os.tmpdir(), "ecommerce.db");
+  }
+}
 
 // Singleton connection across server requests
 let dbInstance: Database.Database | null = null;
 
 export function getDb(): Database.Database {
   if (!dbInstance) {
-    dbInstance = new Database(DB_PATH);
-    dbInstance.pragma("journal_mode = WAL");
-    dbInstance.pragma("foreign_keys = ON");
-    initDb(dbInstance);
+    const dbPath = getDbPath();
+    try {
+      dbInstance = new Database(dbPath);
+      if (isServerless) {
+        dbInstance.pragma("journal_mode = MEMORY");
+      } else {
+        dbInstance.pragma("journal_mode = WAL");
+      }
+      dbInstance.pragma("foreign_keys = ON");
+      initDb(dbInstance);
+    } catch (err) {
+      console.warn(`[getDb] Failed to open SQLite at ${dbPath}, falling back to :memory:`, err);
+      try {
+        dbInstance = new Database(":memory:");
+        initDb(dbInstance);
+      } catch (memErr) {
+        console.error("[getDb] Fatal: failed to open in-memory SQLite:", memErr);
+        throw memErr;
+      }
+    }
   }
   return dbInstance;
 }

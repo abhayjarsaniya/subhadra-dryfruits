@@ -1,49 +1,125 @@
-import { redirect } from "next/navigation";
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { isAdminAuthenticated } from "@/lib/admin-auth";
-import { getDashboardMetrics } from "@/lib/repository";
 import { formatPrice } from "@/lib/format";
+import { adminFetch } from "@/lib/admin-client";
 import {
   TrendingUp,
   ShoppingBag,
-  Clock,
   Package,
   AlertTriangle,
-  Users,
-  CheckCircle2,
+  RefreshCw,
+  Plus,
+  SlidersHorizontal,
   ArrowRight,
 } from "lucide-react";
 
-export const dynamic = "force-dynamic";
+type DashboardData = {
+  totalSales: number;
+  todaySales: number;
+  totalOrders: number;
+  pendingOrders: number;
+  completedOrders: number;
+  totalProducts: number;
+  outOfStockProducts: number;
+  lowStockProducts: number;
+  totalCustomers: number;
+  recentOrders: Array<{
+    id: string;
+    order_number: string;
+    customer_name: string;
+    customer_phone: string;
+    payment_method: string;
+    order_status: string;
+    total_amount: number;
+    items: any[];
+  }>;
+  bestSellers: any[];
+  lowStockItems: Array<{
+    id: string;
+    name: string;
+    group_name: string;
+    sku: string;
+    stock_qty: number;
+  }>;
+};
 
-export default async function AdminDashboardPage() {
-  const isAuth = await isAdminAuthenticated();
-  if (!isAuth) {
-    redirect("/admin/login");
+export default function AdminDashboardPage() {
+  const [data, setData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
+  async function fetchDashboard() {
+    try {
+      const res = await adminFetch("/api/dashboard");
+      if (res.ok) {
+        const json = await res.json();
+        setData(json);
+      }
+    } catch (e) {
+      console.error("Failed to load dashboard metrics:", e);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
   }
 
-  const data = getDashboardMetrics();
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  const handleRefresh = () => {
+    setRefreshing(true);
+    fetchDashboard();
+  };
+
+  const d = data || {
+    totalSales: 0,
+    todaySales: 0,
+    totalOrders: 0,
+    pendingOrders: 0,
+    completedOrders: 0,
+    totalProducts: 46,
+    outOfStockProducts: 0,
+    lowStockProducts: 0,
+    totalCustomers: 0,
+    recentOrders: [],
+    bestSellers: [],
+    lowStockItems: [],
+  };
 
   return (
     <div className="space-y-8">
       {/* Top Header */}
-      <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="font-serif text-2xl font-bold text-ink sm:text-3xl">Executive Dashboard</h1>
           <p className="text-xs text-stone-500">Real-time database store metrics, stock status, and recent orders</p>
         </div>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            onClick={handleRefresh}
+            disabled={refreshing}
+            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50 disabled:opacity-50"
+            title="Refresh metrics"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? "animate-spin text-[#6E2635]" : ""}`} />
+            <span className="hidden sm:inline">Refresh</span>
+          </button>
           <Link
             href="/admin/products"
-            className="inline-flex items-center gap-2 rounded-xl bg-[#6E2635] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#5A1E2B]"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-[#6E2635] px-4 py-2 text-xs font-semibold text-white shadow-xs hover:bg-[#5A1E2B]"
           >
-            + Add Product
+            <Plus className="h-3.5 w-3.5" />
+            Add Product
           </Link>
           <Link
             href="/admin/sections"
-            className="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-4 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3.5 py-2 text-xs font-semibold text-stone-700 hover:bg-stone-50"
           >
-            Customize Homepage
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+            Homepage
           </Link>
         </div>
       </div>
@@ -58,8 +134,14 @@ export default async function AdminDashboardPage() {
               <TrendingUp className="h-4 w-4" />
             </span>
           </div>
-          <p className="mt-2 font-serif text-2xl font-bold text-ink">{formatPrice(data.totalSales)}</p>
-          <p className="mt-1 text-[11px] text-stone-400">Today: {formatPrice(data.todaySales)}</p>
+          {loading ? (
+            <div className="mt-3 h-8 w-28 animate-pulse rounded-md bg-stone-100" />
+          ) : (
+            <>
+              <p className="mt-2 font-serif text-2xl font-bold text-ink">{formatPrice(d.totalSales)}</p>
+              <p className="mt-1 text-[11px] text-stone-400">Today: {formatPrice(d.todaySales)}</p>
+            </>
+          )}
         </div>
 
         {/* Total Orders */}
@@ -70,12 +152,18 @@ export default async function AdminDashboardPage() {
               <ShoppingBag className="h-4 w-4" />
             </span>
           </div>
-          <p className="mt-2 font-serif text-2xl font-bold text-ink">{data.totalOrders}</p>
-          <div className="mt-1 flex items-center gap-2 text-[11px]">
-            <span className="font-semibold text-amber-600">{data.pendingOrders} pending</span>
-            <span>·</span>
-            <span className="text-emerald-700">{data.completedOrders} completed</span>
-          </div>
+          {loading ? (
+            <div className="mt-3 h-8 w-20 animate-pulse rounded-md bg-stone-100" />
+          ) : (
+            <>
+              <p className="mt-2 font-serif text-2xl font-bold text-ink">{d.totalOrders}</p>
+              <div className="mt-1 flex items-center gap-2 text-[11px]">
+                <span className="font-semibold text-amber-600">{d.pendingOrders} pending</span>
+                <span>·</span>
+                <span className="text-emerald-700">{d.completedOrders} completed</span>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Active Products */}
@@ -86,8 +174,14 @@ export default async function AdminDashboardPage() {
               <Package className="h-4 w-4" />
             </span>
           </div>
-          <p className="mt-2 font-serif text-2xl font-bold text-ink">{data.totalProducts}</p>
-          <p className="mt-1 text-[11px] text-stone-400">Scalable to 250+ products</p>
+          {loading ? (
+            <div className="mt-3 h-8 w-16 animate-pulse rounded-md bg-stone-100" />
+          ) : (
+            <>
+              <p className="mt-2 font-serif text-2xl font-bold text-ink">{d.totalProducts}</p>
+              <p className="mt-1 text-[11px] text-stone-400">Scalable to 250+ products</p>
+            </>
+          )}
         </div>
 
         {/* Inventory Warning */}
@@ -98,14 +192,20 @@ export default async function AdminDashboardPage() {
               <AlertTriangle className="h-4 w-4" />
             </span>
           </div>
-          <p className="mt-2 font-serif text-2xl font-bold text-ink">
-            {data.lowStockProducts + data.outOfStockProducts}
-          </p>
-          <div className="mt-1 flex items-center gap-2 text-[11px]">
-            <span className="font-semibold text-rose-600">{data.outOfStockProducts} out of stock</span>
-            <span>·</span>
-            <span className="text-amber-700">{data.lowStockProducts} low</span>
-          </div>
+          {loading ? (
+            <div className="mt-3 h-8 w-16 animate-pulse rounded-md bg-stone-100" />
+          ) : (
+            <>
+              <p className="mt-2 font-serif text-2xl font-bold text-ink">
+                {d.lowStockProducts + d.outOfStockProducts}
+              </p>
+              <div className="mt-1 flex items-center gap-2 text-[11px]">
+                <span className="font-semibold text-rose-600">{d.outOfStockProducts} out of stock</span>
+                <span>·</span>
+                <span className="text-amber-700">{d.lowStockProducts} low</span>
+              </div>
+            </>
+          )}
         </div>
       </div>
 
@@ -124,10 +224,22 @@ export default async function AdminDashboardPage() {
           </div>
 
           <div className="mt-4 divide-y divide-stone-100">
-            {data.recentOrders.length === 0 ? (
+            {loading ? (
+              <div className="space-y-4 py-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="h-4 w-28 animate-pulse rounded bg-stone-100" />
+                      <div className="h-3 w-40 animate-pulse rounded bg-stone-50" />
+                    </div>
+                    <div className="h-5 w-16 animate-pulse rounded bg-stone-100" />
+                  </div>
+                ))}
+              </div>
+            ) : d.recentOrders.length === 0 ? (
               <p className="py-8 text-center text-xs text-stone-400">No orders received yet.</p>
             ) : (
-              data.recentOrders.map((order) => (
+              d.recentOrders.map((order) => (
                 <div key={order.id} className="flex items-center justify-between py-3.5">
                   <div>
                     <div className="flex items-center gap-2">
@@ -137,7 +249,7 @@ export default async function AdminDashboardPage() {
                       </span>
                     </div>
                     <p className="text-xs text-stone-500">{order.customer_name} ({order.customer_phone})</p>
-                    <p className="text-[10px] text-stone-400">{order.items.length} items</p>
+                    <p className="text-[10px] text-stone-400">{order.items?.length || 0} items</p>
                   </div>
                   <div className="text-right">
                     <p className="font-serif text-sm font-bold text-ink">{formatPrice(order.total_amount)}</p>
@@ -174,10 +286,22 @@ export default async function AdminDashboardPage() {
           </div>
 
           <div className="mt-4 divide-y divide-stone-100">
-            {data.lowStockItems.length === 0 ? (
+            {loading ? (
+              <div className="space-y-4 py-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center justify-between">
+                    <div className="space-y-2">
+                      <div className="h-4 w-32 animate-pulse rounded bg-stone-100" />
+                      <div className="h-3 w-48 animate-pulse rounded bg-stone-50" />
+                    </div>
+                    <div className="h-5 w-16 animate-pulse rounded bg-stone-100" />
+                  </div>
+                ))}
+              </div>
+            ) : d.lowStockItems.length === 0 ? (
               <p className="py-8 text-center text-xs text-emerald-700">All products are healthy in stock!</p>
             ) : (
-              data.lowStockItems.map((prod) => (
+              d.lowStockItems.map((prod) => (
                 <div key={prod.id} className="flex items-center justify-between py-3">
                   <div>
                     <p className="text-xs font-semibold text-ink">{prod.name}</p>

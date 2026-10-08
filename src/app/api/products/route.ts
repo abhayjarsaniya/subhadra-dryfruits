@@ -8,25 +8,32 @@ import {
 } from "@/lib/repository";
 import { getDb } from "@/lib/db";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const categoryId = searchParams.get("category") || undefined;
-  const search = searchParams.get("search") || undefined;
-  const sortBy = (searchParams.get("sort") as any) || "featured";
-  const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
-  const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined;
-  const activeOnly = searchParams.get("activeOnly") === "false" ? false : true;
+  try {
+    const { searchParams } = new URL(req.url);
+    const categoryId = searchParams.get("category") || undefined;
+    const search = searchParams.get("search") || undefined;
+    const sortBy = (searchParams.get("sort") as any) || "featured";
+    const limit = searchParams.get("limit") ? Number(searchParams.get("limit")) : undefined;
+    const offset = searchParams.get("offset") ? Number(searchParams.get("offset")) : undefined;
+    const activeOnly = searchParams.get("activeOnly") === "false" ? false : true;
 
-  const result = getAllProducts({
-    categoryId,
-    search,
-    sortBy,
-    limit,
-    offset,
-    activeOnly,
-  });
+    const result = getAllProducts({
+      categoryId,
+      search,
+      sortBy,
+      limit,
+      offset,
+      activeOnly,
+    });
 
-  return NextResponse.json(result);
+    return NextResponse.json(result);
+  } catch (error: any) {
+    console.error("Products GET error:", error);
+    return NextResponse.json({ products: [], total: 0 });
+  }
 }
 
 export async function POST(req: NextRequest) {

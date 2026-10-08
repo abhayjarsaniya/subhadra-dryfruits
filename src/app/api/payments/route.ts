@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrderById, updatePaymentStatus } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function POST(req: NextRequest) {
   try {
     const { orderId, paymentMethod, paymentDetails, simulateSuccess } = await req.json();

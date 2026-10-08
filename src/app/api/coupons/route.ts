@@ -2,25 +2,32 @@ import { NextRequest, NextResponse } from "next/server";
 import { isAdminAuthenticated } from "@/lib/admin-auth";
 import { getAllCoupons, saveCoupon, deleteCoupon, validateCoupon } from "@/lib/repository";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(req: NextRequest) {
-  const { searchParams } = new URL(req.url);
-  const code = searchParams.get("code");
-  const subtotal = searchParams.get("subtotal") ? Number(searchParams.get("subtotal")) : 0;
+  try {
+    const { searchParams } = new URL(req.url);
+    const code = searchParams.get("code");
+    const subtotal = searchParams.get("subtotal") ? Number(searchParams.get("subtotal")) : 0;
 
-  // Validate coupon for checkout
-  if (code) {
-    const res = validateCoupon(code, subtotal);
-    return NextResponse.json(res);
+    // Validate coupon for checkout
+    if (code) {
+      const res = validateCoupon(code, subtotal);
+      return NextResponse.json(res);
+    }
+
+    // Admin listing coupons
+    const isAuth = await isAdminAuthenticated(req);
+    if (!isAuth) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const coupons = getAllCoupons();
+    return NextResponse.json(coupons);
+  } catch (error: any) {
+    console.error("Coupons GET error:", error);
+    return NextResponse.json([]);
   }
-
-  // Admin listing coupons
-  const isAuth = await isAdminAuthenticated(req);
-  if (!isAuth) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const coupons = getAllCoupons();
-  return NextResponse.json(coupons);
 }
 
 export async function POST(req: NextRequest) {
